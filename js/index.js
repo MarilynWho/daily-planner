@@ -38,11 +38,12 @@ function timeOfTheDay() {
 }
 
 function saveMemo(event) {
-  //$(this).preventDefault();
+  event.preventDefault();
+  console.log();
   let entry = {
-    time : $(".hour").val(),
-    text : $(".textarea").val()
-  }
+    time: $(this).parent().children(".hour").text(),
+    text: $(this).parent().children(".textarea").val(),
+  };
 
   console.log(entry);
 
@@ -53,6 +54,6 @@ function saveMemo(event) {
   $(".textarea").val(entry.text);
  }
 
-$(".container").click(".saveBtn", saveMemo);
+$(".container").on("click", ".saveBtn", saveMemo);
 
 timeOfTheDay();
