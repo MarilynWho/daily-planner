@@ -37,4 +37,22 @@ function timeOfTheDay() {
   }
 }
 
+function saveMemo(event) {
+  //$(this).preventDefault();
+  let entry = {
+    time : $(".hour").val(),
+    text : $(".textarea").val()
+  }
+
+  console.log(entry);
+
+  localStorage.setItem("entry", entry);
+
+  let savedEntry = localStorage.getItem("entry");
+  $(".hour").val(entry.time);
+  $(".textarea").val(entry.text);
+ }
+
+$(".container").click(".saveBtn", saveMemo);
+
 timeOfTheDay();
