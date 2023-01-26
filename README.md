@@ -2,7 +2,7 @@
 
 ## Description
 
-This Project was created to practice JQuery API.
+This Project was created to practice JQuery and Moment API's.
 Goal of this Project is to create work shedual where we can add entrys to planner.
 Added entries are stored in localstorage.
 
