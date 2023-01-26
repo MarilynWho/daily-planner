@@ -8,14 +8,13 @@ if (savedEntries == undefined) {
 } else {
   savedEntries = JSON.parse(savedEntries);
 }
-console.log(savedEntries);
 // display
 $("#currentDay").text(today.format("dddd, MMMM, Do"));
 
 // start of the working day
 let start = moment("9:00", "HH:mm");
 // end of the working day
-let end = moment("24:00", "HH:mm");
+let end = moment("18:00", "HH:mm");
 // table for every hour in working day
 function timeOfTheDay() {
   for (let i = start; i.diff(end); i.add(1, "h")) {
@@ -24,7 +23,6 @@ function timeOfTheDay() {
     let textArea = $("<textarea>").addClass("textarea").css("flex-grow", "1");
     // Check if there are entrys in local storage
     let match = savedEntries[i.format("HH:mm")];
-    console.log(match);
     if (match !== undefined) {
       textArea.text(match);
     }
@@ -63,8 +61,9 @@ function saveMemo(event) {
   savedEntries[time] = text;
   // save to local storage
   localStorage.setItem("entry", JSON.stringify(savedEntries));
+  // message pops up
   let saveMsg = $("<p>").text("Appointment added to local storage").css("text-align", "center");
-  $(".save").append(saveMsg);
+  $(".save").empty().append(saveMsg);
 }
 
 $(".container").on("click", ".saveBtn", saveMemo);
