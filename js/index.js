@@ -1,6 +1,14 @@
 // todays information
 let today = moment();
 let table = $(".container");
+// Access local storage
+let savedEntries = localStorage.getItem("entry");
+if (savedEntries == undefined) {
+  savedEntries = [];
+} else {
+  savedEntries = JSON.parse(savedEntries);
+}
+// console.log(savedEntries);
 // display
 $("#currentDay").text(today.format("dddd, MMMM, Do"));
 
@@ -14,18 +22,28 @@ function timeOfTheDay() {
     // creating textarea with class textarea
     // added 'flex-grow' attribute for it to take more spase
     let textArea = $("<textarea>").addClass("textarea").css("flex-grow", "1");
-    // if timeblock in this hour, add class "present"
-    if (i.isSame(today.startOf("hour"))) {
-      textArea.addClass("present");
-    } else if (i.isAfter(today.startOf("hour"))) { // if timeblock is after, apply class "after"
-      textArea.addClass("future");
-    } else {
-      textArea.addClass("past"); // else aplly class "past"
+    // Check if there are entrys in local storage
+    let match = savedEntries.find(element => element.time === i.format("HH:mm"));
+    console.log(match);
+    if (match !== undefined) {
+      textArea.text(match.text);
     }
+      if (i.isSame(today.startOf("hour"))) {
+        // if timeblock in this hour, add class "present"
+        textArea.addClass("present");
+      } else if (i.isAfter(today.startOf("hour"))) {
+        // if timeblock is after, apply class "after"
+        textArea.addClass("future");
+      } else {
+        textArea.addClass("past"); // else aplly class "past"
+      }
     // create save icon to go into button
     let icon = $("<i>").addClass("fa").addClass("fa-save");
     // create batton and append icon inside
-    let saveBttn = $("<button>").addClass("saveBtn").append(icon).css("padding", "20px");
+    let saveBttn = $("<button>")
+      .addClass("saveBtn")
+      .append(icon)
+      .css("padding", "20px");
     // Create Timeslot with class "timeblock"
     let newTimeSlot = $("<div>").addClass("time-block").addClass("row");
     // create container for hours
@@ -37,22 +55,26 @@ function timeOfTheDay() {
   }
 }
 
+// function fillTheText(time) {
+//   $.each(savedEntries, function (saved, index) {
+//     console.log(saved);
+//     if (time === saved.time) {
+//       return saved;
+//     }
+//   });
+// }
+
 function saveMemo(event) {
   event.preventDefault();
-  console.log();
-  let entry = {
+  savedEntries.push({
     time: $(this).parent().children(".hour").text(),
     text: $(this).parent().children(".textarea").val(),
-  };
+  });
 
-  console.log(entry);
+  // console.log(entry);
 
-  localStorage.setItem("entry", entry);
-
-  let savedEntry = localStorage.getItem("entry");
-  $(".hour").val(entry.time);
-  $(".textarea").val(entry.text);
- }
+  localStorage.setItem("entry", JSON.stringify(savedEntries));
+}
 
 $(".container").on("click", ".saveBtn", saveMemo);
 
