@@ -4,11 +4,11 @@ let table = $(".container");
 // Access local storage
 let savedEntries = localStorage.getItem("entry");
 if (savedEntries == undefined) {
-  savedEntries = [];
+  savedEntries = {};
 } else {
   savedEntries = JSON.parse(savedEntries);
 }
-// console.log(savedEntries);
+console.log(savedEntries);
 // display
 $("#currentDay").text(today.format("dddd, MMMM, Do"));
 
@@ -23,20 +23,20 @@ function timeOfTheDay() {
     // added 'flex-grow' attribute for it to take more spase
     let textArea = $("<textarea>").addClass("textarea").css("flex-grow", "1");
     // Check if there are entrys in local storage
-    let match = savedEntries.find(element => element.time === i.format("HH:mm"));
+    let match = savedEntries[i.format("HH:mm")];
     console.log(match);
     if (match !== undefined) {
-      textArea.text(match.text);
+      textArea.text(match);
     }
-      if (i.isSame(today.startOf("hour"))) {
-        // if timeblock in this hour, add class "present"
-        textArea.addClass("present");
-      } else if (i.isAfter(today.startOf("hour"))) {
-        // if timeblock is after, apply class "after"
-        textArea.addClass("future");
-      } else {
-        textArea.addClass("past"); // else aplly class "past"
-      }
+    if (i.isSame(today.startOf("hour"))) {
+      // if timeblock in this hour, add class "present"
+      textArea.addClass("present");
+    } else if (i.isAfter(today.startOf("hour"))) {
+      // if timeblock is after, apply class "after"
+      textArea.addClass("future");
+    } else {
+      textArea.addClass("past"); // else aplly class "past"
+    }
     // create save icon to go into button
     let icon = $("<i>").addClass("fa").addClass("fa-save");
     // create batton and append icon inside
@@ -55,25 +55,16 @@ function timeOfTheDay() {
   }
 }
 
-// function fillTheText(time) {
-//   $.each(savedEntries, function (saved, index) {
-//     console.log(saved);
-//     if (time === saved.time) {
-//       return saved;
-//     }
-//   });
-// }
 
 function saveMemo(event) {
   event.preventDefault();
-  savedEntries.push({
-    time: $(this).parent().children(".hour").text(),
-    text: $(this).parent().children(".textarea").val(),
-  });
-
-  // console.log(entry);
-
+  let time = $(this).parent().children(".hour").text();
+  let text = $(this).parent().children(".textarea").val();
+  savedEntries[time] = text;
+  // save to local storage
   localStorage.setItem("entry", JSON.stringify(savedEntries));
+  let saveMsg = $("<p>").text("Appointment added to local storage").css("text-align", "center");
+  $(".save").append(saveMsg);
 }
 
 $(".container").on("click", ".saveBtn", saveMemo);
